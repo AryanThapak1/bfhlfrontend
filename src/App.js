@@ -5,12 +5,11 @@ function App() {
   const [data, setData] = useState('');
   const [availableFilters, setAvailableFilters] = useState([
     'Numbers', 'Alphabets', 'Highest Lowercase Alphabet'
-  ]); // Available filter options
-  const [filters, setFilters] = useState([]); // Store selected filters as an array
+  ]); 
+  const [filters, setFilters] = useState([]); 
   const [filteredResponse, setFilteredResponse] = useState('');
-  const [apiResponse, setApiResponse] = useState(null); // Store the API response
+  const [apiResponse, setApiResponse] = useState(null);
 
-  // Fetch data from API when form is submitted
   const handleSubmit = async () => {
     try {
       const parsedData = JSON.parse(data);
@@ -27,7 +26,7 @@ function App() {
       const newData = await response.json();
 
       if (newData.is_success) {
-        setApiResponse(newData); // Store the API response in state
+        setApiResponse(newData); 
       } else {
         setFilteredResponse('Error in API response');
       }
@@ -37,12 +36,10 @@ function App() {
     }
   };
 
-  // Update the filtered response when filters or apiResponse changes
   useEffect(() => {
     if (apiResponse) {
       let combinedResponse = [];
 
-      // Check each filter and add the corresponding data if available
       if (filters.includes('Numbers') && apiResponse.numbers) {
         combinedResponse.push(`Numbers: ${apiResponse.numbers.join(', ')}`);
       }
@@ -53,19 +50,18 @@ function App() {
         combinedResponse.push(`Highest Lowercase Alphabet: ${apiResponse.highest_lowercase_alphabet.join(', ')}`);
       }
 
-      // Join all the combined responses with ' | ' separator
       setFilteredResponse(combinedResponse.length ? combinedResponse.join(' | ') : 'No data for selected filters');
     }
-  }, [filters, apiResponse]); // Trigger when filters or apiResponse changes
+  }, [filters, apiResponse]); 
 
-  // Handle adding filter to the active filters list
+
   const addFilter = (filter) => {
     if (!filters.includes(filter)) {
       setFilters([...filters, filter]);
     }
   };
 
-  // Handle removing filter from the active filters list
+
   const removeFilter = (filter) => {
     setFilters(filters.filter(f => f !== filter));
   };
@@ -73,7 +69,6 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        {/* Filter Selection Dropdown */}
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="multiFilter">
             Select Filters
@@ -93,7 +88,7 @@ function App() {
           </select>
         </div>
 
-        {/* Active Filters Bar */}
+        
         <div className="mb-4 flex flex-wrap space-x-2">
           {filters.map((filter) => (
             <span
@@ -107,7 +102,7 @@ function App() {
           ))}
         </div>
 
-        {/* Input and Submit Button */}
+
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="apiInput">
             API Input
@@ -130,7 +125,7 @@ function App() {
           </button>
         </div>
 
-        {/* Filtered Response */}
+
         <div>
           <label className="block text-gray-700 font-bold mb-2" htmlFor="filteredResponse">
             Filtered Response
