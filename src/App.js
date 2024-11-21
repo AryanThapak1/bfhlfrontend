@@ -3,7 +3,10 @@ import './App.css';
 
 function App() {
   const [data, setData] = useState('');
-  const [filters, setFilters] = useState(['Numbers']); // Store selected filters as an array
+  const [availableFilters, setAvailableFilters] = useState([
+    'Numbers', 'Alphabets', 'Highest Lowercase Alphabet'
+  ]); // Available filter options
+  const [filters, setFilters] = useState([]); // Store selected filters as an array
   const [filteredResponse, setFilteredResponse] = useState('');
   const [apiResponse, setApiResponse] = useState(null); // Store the API response
 
@@ -55,9 +58,56 @@ function App() {
     }
   }, [filters, apiResponse]); // Trigger when filters or apiResponse changes
 
+  // Handle adding filter to the active filters list
+  const addFilter = (filter) => {
+    if (!filters.includes(filter)) {
+      setFilters([...filters, filter]);
+    }
+  };
+
+  // Handle removing filter from the active filters list
+  const removeFilter = (filter) => {
+    setFilters(filters.filter(f => f !== filter));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        {/* Filter Selection Dropdown */}
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2" htmlFor="multiFilter">
+            Select Filters
+          </label>
+          <select
+            id="multiFilter"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            onChange={(e) => addFilter(e.target.value)}
+            value=""
+          >
+            <option value="" disabled>Select a filter</option>
+            {availableFilters.map((filter) => (
+              <option key={filter} value={filter}>
+                {filter}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Active Filters Bar */}
+        <div className="mb-4 flex flex-wrap space-x-2">
+          {filters.map((filter) => (
+            <span
+              key={filter}
+              className="bg-blue-500 text-white px-4 py-2 rounded-full flex items-center cursor-pointer"
+              onClick={() => removeFilter(filter)}
+            >
+              {filter}
+              <span className="ml-2 text-xs">x</span>
+            </span>
+          ))}
+        </div>
+
+        {/* Input and Submit Button */}
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2" htmlFor="apiInput">
             API Input
@@ -79,22 +129,8 @@ function App() {
             Submit
           </button>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="multiFilter">
-            Multi Filter
-          </label>
-          <select
-            id="multiFilter"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            multiple
-            value={filters}
-            onChange={e => setFilters(Array.from(e.target.selectedOptions, option => option.value))}
-          >
-            <option value="Numbers">Numbers</option>
-            <option value="Alphabets">Alphabets</option>
-            <option value="Highest Lowercase Alphabet">Highest Lowercase Alphabet</option>
-          </select>
-        </div>
+
+        {/* Filtered Response */}
         <div>
           <label className="block text-gray-700 font-bold mb-2" htmlFor="filteredResponse">
             Filtered Response
